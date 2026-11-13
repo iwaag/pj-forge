@@ -1,0 +1,4 @@
+#!/bin/sh
+# forge's tools, from any directory: `tools/forge --help`.
+here=$(cd "$(dirname "$0")" && pwd)
+exec uv run --quiet --project "$here" forge "$@"

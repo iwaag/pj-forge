@@ -1,0 +1,283 @@
+{
+  "schema": "forge.comfy-job.v1",
+  "preset": "flux2-scenery",
+  "parameters": {
+    "prompt": "Low-angle view from the forest floor through a dense ancient forest, mossy trunks, sunbeams through mist, ferns, cinematic wide scenery",
+    "width": 1344,
+    "height": 768,
+    "seed": 7,
+    "steps": 8,
+    "guidance": 4.0,
+    "unet": "flux2_dev_fp8mixed.safetensors",
+    "lora": "Flux_2-Turbo-LoRA_comfyui.safetensors"
+  },
+  "graph_sha256": "381b1b090bce3bca856d8f2ebf56e2bfe1b1712dd0fa63b4fe8db1776dcd8eb4",
+  "prompt_id": "3a0be0c4-466c-48b3-8cb7-0e988fe52d29",
+  "state": "collected",
+  "created_at": "2026-11-13T10:59:14Z",
+  "submitted_at": "2026-11-13T10:59:14Z",
+  "outputs": [
+    {
+      "file": "outputs/Flux2_dev_00116_.png",
+      "sha256": "d265012db92d85bcb05e946c832f976a4601c91bc1d7caa826b65437363d6d41",
+      "bytes": 2007051,
+      "server_file": "Flux2_dev_00116_.png"
+    }
+  ],
+  "collected_at": "2026-11-13T11:03:16Z",
+  "graph": {
+    "9": {
+      "inputs": {
+        "filename_prefix": "Flux2_dev",
+        "images": [
+          "98:8",
+          0
+        ]
+      },
+      "class_type": "SaveImage",
+      "_meta": {
+        "title": "Save Image"
+      }
+    },
+    "98:22": {
+      "inputs": {
+        "model": [
+          "98:102",
+          0
+        ],
+        "conditioning": [
+          "98:26",
+          0
+        ]
+      },
+      "class_type": "BasicGuider",
+      "_meta": {
+        "title": "Basic Guider"
+      }
+    },
+    "98:26": {
+      "inputs": {
+        "guidance": 4.0,
+        "conditioning": [
+          "98:6",
+          0
+        ]
+      },
+      "class_type": "FluxGuidance",
+      "_meta": {
+        "title": "FluxGuidance"
+      }
+    },
+    "98:16": {
+      "inputs": {
+        "sampler_name": "euler"
+      },
+      "class_type": "KSamplerSelect",
+      "_meta": {
+        "title": "KSamplerSelect"
+      }
+    },
+    "98:10": {
+      "inputs": {
+        "vae_name": "full_encoder_small_decoder.safetensors"
+      },
+      "class_type": "VAELoader",
+      "_meta": {
+        "title": "Load VAE"
+      }
+    },
+    "98:13": {
+      "inputs": {
+        "noise": [
+          "98:25",
+          0
+        ],
+        "guider": [
+          "98:22",
+          0
+        ],
+        "sampler": [
+          "98:16",
+          0
+        ],
+        "sigmas": [
+          "98:48",
+          0
+        ],
+        "latent_image": [
+          "98:47",
+          0
+        ]
+      },
+      "class_type": "SamplerCustomAdvanced",
+      "_meta": {
+        "title": "SamplerCustomAdvanced"
+      }
+    },
+    "98:8": {
+      "inputs": {
+        "samples": [
+          "98:13",
+          0
+        ],
+        "vae": [
+          "98:10",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode"
+      }
+    },
+    "98:38": {
+      "inputs": {
+        "clip_name": "mistral_3_small_flux2_bf16.safetensors",
+        "type": "flux2",
+        "device": "default"
+      },
+      "class_type": "CLIPLoader",
+      "_meta": {
+        "title": "Load CLIP"
+      }
+    },
+    "98:48": {
+      "inputs": {
+        "steps": [
+          "98:103",
+          0
+        ],
+        "width": 1344,
+        "height": 768
+      },
+      "class_type": "Flux2Scheduler",
+      "_meta": {
+        "title": "Flux2Scheduler"
+      }
+    },
+    "98:47": {
+      "inputs": {
+        "width": 1344,
+        "height": 768,
+        "batch_size": 1
+      },
+      "class_type": "EmptyFlux2LatentImage",
+      "_meta": {
+        "title": "Empty Flux 2 Latent"
+      }
+    },
+    "98:25": {
+      "inputs": {
+        "noise_seed": 7
+      },
+      "class_type": "RandomNoise",
+      "_meta": {
+        "title": "RandomNoise"
+      }
+    },
+    "98:6": {
+      "inputs": {
+        "text": "Low-angle view from the forest floor through a dense ancient forest, mossy trunks, sunbeams through mist, ferns, cinematic wide scenery",
+        "clip": [
+          "98:38",
+          0
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Positive Prompt)"
+      }
+    },
+    "98:101": {
+      "inputs": {
+        "lora_name": "Flux_2-Turbo-LoRA_comfyui.safetensors",
+        "strength_model": 1,
+        "model": [
+          "98:12",
+          0
+        ]
+      },
+      "class_type": "LoraLoaderModelOnly",
+      "_meta": {
+        "title": "Load LoRA"
+      }
+    },
+    "98:102": {
+      "inputs": {
+        "switch": [
+          "98:104",
+          0
+        ],
+        "on_false": [
+          "98:12",
+          0
+        ],
+        "on_true": [
+          "98:101",
+          0
+        ]
+      },
+      "class_type": "ComfySwitchNode",
+      "_meta": {
+        "title": "Switch(model)"
+      }
+    },
+    "98:100": {
+      "inputs": {
+        "value": 20
+      },
+      "class_type": "PrimitiveInt",
+      "_meta": {
+        "title": "Steps"
+      }
+    },
+    "98:99": {
+      "inputs": {
+        "value": 8
+      },
+      "class_type": "PrimitiveInt",
+      "_meta": {
+        "title": "Steps"
+      }
+    },
+    "98:103": {
+      "inputs": {
+        "switch": [
+          "98:104",
+          0
+        ],
+        "on_false": [
+          "98:100",
+          0
+        ],
+        "on_true": [
+          "98:99",
+          0
+        ]
+      },
+      "class_type": "ComfySwitchNode",
+      "_meta": {
+        "title": "Switch(steps)"
+      }
+    },
+    "98:104": {
+      "inputs": {
+        "value": true
+      },
+      "class_type": "PrimitiveBoolean",
+      "_meta": {
+        "title": "Enable Turbo LoRA"
+      }
+    },
+    "98:12": {
+      "inputs": {
+        "unet_name": "flux2_dev_fp8mixed.safetensors",
+        "weight_dtype": "default"
+      },
+      "class_type": "UNETLoader",
+      "_meta": {
+        "title": "Load Diffusion Model"
+      }
+    }
+  }
+}
