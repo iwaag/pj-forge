@@ -98,13 +98,36 @@ picture quality beyond a few prompts. Known limits and failure modes are in
 [docs/flux2-scenery.md](docs/flux2-scenery.md#limits-and-failure-modes) — notably, there is no
 negative prompt, and naming something to avoid can make it appear.
 
-## Other commands
+## The other tools: what exists and what was checked
 
-`forge image generate/transform` (SwarmUI and Pillow), `forge speech say` (macOS `say` +
-ffmpeg), `forge asset …` (S3), `forge sources`, and the `video`/`music` presets are included
-because they share the package. They are not documented or checked in this publication; see
-`tools/forge <command> --help`. The `video` and `music` presets also need workflow exports
-that are not published here.
+The package has more commands than the documented flux2 route. This table says what each
+does and how far it was checked. "Checked" always means: run by the author, on the author's
+own machines, on the dates given; none was reproduced by anyone else.
+
+| Want | Command | Needs in `forge.env` / host | Checked | Limits |
+| --- | --- | --- | --- | --- |
+| Wide scenery image | `forge job submit flux2-scenery` | `FORGE_COMFYUI_URL` | yes, see above | documented above |
+| Any image from a prompt, or a variant of a reference image | `forge image generate "<prompt>" --out DIR [--init-image F --init-creativity 0.6]` | a [SwarmUI](https://github.com/mcmonkeyprojects/SwarmUI) server: `FORGE_SWARMUI_URL`, and `FORGE_SWARMUI_MODEL` (or `--model`) naming a checkpoint it lists | once, 2026-10-14: a 768×768 text-to-image in about 25 s (SDXL checkpoint, 20 steps) and an image-to-image of it at creativity 0.5 that kept the composition and changed one colour. Not re-run since; a later partial probe (2026-10-18) of the author's SwarmUI found its API calls returning errors, so treat this route as unconfirmed for current SwarmUI versions | opaque output only (no transparency); no reliable text inside the picture; the output depends on your checkpoint |
+| Resize or convert an image | `forge image transform F --out G [--width W] [--height H] [--format png\|jpeg\|webp]` | Pillow (installed by `uv`) | once, 2026-10-14: a 768×768 JPEG to a 256×256 PNG | plain resize/convert; for anything else use Pillow directly |
+| A spoken line as a WAV | `forge speech say "<text>" --out line.wav [--voice NAME] [--rate 48000] [--pad 0.3]` | **macOS** (`say`) and `ffmpeg` on the path | format only, 2026-10-14: three Japanese lines, voice `Kyoko`, came out as 48 kHz mono WAV with silence at both ends. **No one has listened to them**, so how intelligible they are is not established | system voice, flat delivery, no acting or emotion control; only voices listed by `say -v '?'`; other languages untried |
+| Music track, video clip | `forge job submit music` / `video` | `FORGE_COMFYUI_URL` and your own workflow export at `<settings folder>/comfy/music.json` / `video.json` (not published here) | no: used by an earlier version in September 2026, not run with these tools | no workflow is included, so these presets do nothing until you provide one |
+| Short sound effects | not in this repository | — | — | the author handles these in a separate project; this tool does not make them |
+
+Example (image, from a SwarmUI server configured in `forge.env`):
+
+```sh
+tools/forge image generate "a red apple on a wooden table, soft daylight" --out out/ --seed 42
+tools/forge image transform out/*.png --out out/apple-256.png --width 256
+tools/forge speech say "Hello. This is a test line." --out out/line.wav --voice Samantha   # macOS
+```
+
+Each prints JSON with the file path, its sha256 and the conditions used (model, seed, size…).
+The voice name `Samantha` is only an example of a macOS voice; it was not tried here.
+
+Other commands: `forge asset …` delivers files to an S3-compatible bucket and
+re-verifies them (`FORGE_S3_*`; not exercised in the checks above), `forge sources` lists
+knowledge folders of the author's setup and is of no use elsewhere. `tools/forge <command> --help`
+shows every option.
 
 Tests (fakes, no server): `cd tools && uv run pytest -q`.
 

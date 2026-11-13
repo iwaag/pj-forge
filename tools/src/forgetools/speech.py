@@ -1,6 +1,7 @@
 """Speech: one WAV per line of text through macOS's built-in `say` and `ffmpeg`.
 
-System text-to-speech, not acting: intelligible, flat prosody. "Calm, gentle"
+System text-to-speech, not acting: flat prosody; no listener has judged how
+intelligible it is (only format and padding were measured). "Calm, gentle"
 delivery is not controllable beyond voice choice and speaking rate. No model,
 service or paid API — `say` and `ffmpeg` are host tools already relied on
 elsewhere in this project.

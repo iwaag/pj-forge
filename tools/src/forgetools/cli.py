@@ -153,8 +153,8 @@ def build_parser() -> argparse.ArgumentParser:
     speech_cmd = commands.add_parser("speech", help="spoken voice lines").add_subparsers(dest="action", required=True)
     say = speech_cmd.add_parser("say", help="one WAV through macOS's `say` + ffmpeg",
                                 description="System text-to-speech (macOS `say`) resampled and padded with "
-                                            "ffmpeg into one mono WAV. Intelligible, flat prosody — not "
-                                            "acting; 'calm, gentle' delivery is not controllable beyond "
+                                            "ffmpeg into one mono WAV. Flat prosody, not "
+                                            "acting (no listener has judged intelligibility); 'calm, gentle' delivery is not controllable beyond "
                                             "voice choice and speaking rate. No model, service or paid API.")
     say.add_argument("text")
     say.add_argument("--out", type=Path, required=True, help="WAV file to write")
