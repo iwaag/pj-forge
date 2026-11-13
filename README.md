@@ -18,7 +18,7 @@ the private catalog, run histories and host settings are not included ([NOTICE.m
 | A ComfyUI server reachable over HTTP | recent core: the graph uses `Flux2Scheduler`, `EmptyFlux2LatentImage`, `ComfySwitchNode`, `PrimitiveInt`, `PrimitiveBoolean` (checked with ComfyUI 0.35.0) |
 | The four model files in that server | ≈ 69 GB in total; download links and folders in [docs/flux2-scenery.md](docs/flux2-scenery.md#models). FLUX.2 [dev] is under a **non-commercial** licence. |
 | A GPU with enough memory | checked on one 48 GB card only; smaller cards were not tried |
-| A settings folder, outside any Git checkout | `forge.env` and `comfy/flux2-scenery.json`, see below |
+| A settings folder, outside any Git checkout | `forge.env` with the server's URL, see below |
 
 Not needed for this route: credentials, agdev, S3 storage, SwarmUI.
 
@@ -26,13 +26,17 @@ Not needed for this route: credentials, agdev, S3 storage, SwarmUI.
 
 ```sh
 git clone https://github.com/iwaag/pj-forge.git && cd pj-forge
-mkdir -p ~/forge-settings/comfy
-cp workflows/flux2-scenery.api.json ~/forge-settings/comfy/flux2-scenery.json
+mkdir -p ~/forge-settings
 echo "FORGE_COMFYUI_URL=http://<comfyui-host>:8188" > ~/forge-settings/forge.env
 export FORGE_LOCAL=~/forge-settings
 tools/forge local          # which settings folder applies and what is configured (values never printed)
-tools/forge job presets    # flux2-scenery should say "workflow_present": true
+tools/forge job presets    # flux2-scenery: "workflow_present": true, "workflow": "bundled"
 ```
+
+The workflow is bundled with the tools (`tools/src/forgetools/workflows/flux2-scenery.json`).
+If your server names the model files differently, export your own graph in API format to
+`<settings folder>/comfy/flux2-scenery.json`: it takes precedence, and `job presets` and each
+job record (`parameters.workflow`) say which one was used.
 
 `tools/forge.env.example` lists every key the other commands read. The settings folder is
 yours to place; `FORGE_LOCAL` names it. (Inside agdev the folder is found from the project
@@ -106,6 +110,6 @@ Tests (fakes, no server): `cd tools && uv run pytest -q`.
 
 ## Licence
 
-CC0 1.0 for this repository's own content ([LICENSE](LICENSE)); the workflow file is MIT
+CC0 1.0 for this repository's own content ([LICENSE](LICENSE)); the bundled workflow file is MIT
 (Comfy Org) — see [NOTICE.md](NOTICE.md). Model weights are not included and carry their own
 licences.

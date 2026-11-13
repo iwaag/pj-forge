@@ -16,10 +16,10 @@
 
 ## Third-party material
 
-- `workflows/flux2-scenery.api.json`: API-format export of the template
+- `tools/src/forgetools/workflows/flux2-scenery.json`: API-format export of the template
   `image_flux2_text_to_image` from [Comfy-Org/workflow_templates](https://github.com/Comfy-Org/workflow_templates),
   MIT License, Copyright (c) 2023-present Comfy Org — full text in
-  [workflows/LICENSE-workflow-templates](workflows/LICENSE-workflow-templates).
+  [tools/src/forgetools/workflows/LICENSE-workflow-templates](tools/src/forgetools/workflows/LICENSE-workflow-templates).
 - Model weights are not included. Each has its own licence, listed with the download links
   in [docs/flux2-scenery.md](docs/flux2-scenery.md#models); FLUX.2 [dev] is non-commercial.
 - Python dependencies (Pillow, boto3, requests, pytest) are installed by `uv` from PyPI under

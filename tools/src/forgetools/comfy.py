@@ -14,9 +14,10 @@ So an interruption at any point leaves a record that names the job:
 
 Nothing here waits unboundedly: `collect --wait N` polls at most N seconds.
 
-Presets configure a workflow export kept in the workspace's
-`comfy/<preset>.json` of the project workspace (exports name model files, which are this
-host's facts). Extracted from agforge `src/agforge/comfy_video.py`,
+Presets configure a workflow export: the project workspace's `comfy/<preset>.json`
+when it has one (exports name model files, which are this host's facts), otherwise
+a default bundled in `forgetools/workflows/` (flux2-scenery only: ComfyUI's own
+template export with the template's model file names). Extracted from agforge `src/agforge/comfy_video.py`,
 `comfy_music.py`, `comfy_async.py` at `26dc1df`, and from mediagen-localize
 `flux2_scenery/generate.py` at `31c0ba1` (the FLUX.2 node settings).
 """
@@ -98,13 +99,24 @@ PRESETS = {
 }
 
 
-def preset_file(name: str) -> Path:
-    return local_dir() / "comfy" / f"{name}.json"
+BUNDLED = Path(__file__).resolve().parent / "workflows"
+
+
+def preset_source(name: str) -> tuple[Path | None, str | None]:
+    """(file, "workspace" | "bundled") of a preset's workflow; the workspace's export wins."""
+    for path, origin in ((local_dir() / "comfy" / f"{name}.json", "workspace"),
+                         (BUNDLED / f"{name}.json", "bundled")):
+        if path.is_file():
+            return path, origin
+    return None, None
 
 
 def presets() -> list[dict]:
-    return [{"preset": name, "about": about, "workflow_present": preset_file(name).is_file()}
-            for name, (_, about) in PRESETS.items()]
+    rows = []
+    for name, (_, about) in PRESETS.items():
+        path, origin = preset_source(name)
+        rows.append({"preset": name, "about": about, "workflow_present": path is not None, "workflow": origin})
+    return rows
 
 
 def build(preset: str | None, prompt: str | None, options: dict, workflow: Path | None) -> tuple[dict, dict]:
@@ -116,12 +128,12 @@ def build(preset: str | None, prompt: str | None, options: dict, workflow: Path 
         raise LocalError(f"unknown preset {preset!r}; `forge job presets` lists them")
     if not prompt or not prompt.strip():
         raise LocalError("--prompt is required with a preset")
-    path = preset_file(preset)
-    if not path.is_file():
+    path, origin = preset_source(preset)
+    if path is None:
         raise LocalError(f"the workspace has no comfy/{preset}.json (export the workflow in API format)")
     graph = copy.deepcopy(json.loads(path.read_text(encoding="utf-8")))
     parameters = PRESETS[preset][0](graph, prompt, options)
-    return graph, {"prompt": prompt, **parameters}
+    return graph, {"prompt": prompt, **parameters, "workflow": origin}
 
 
 # ---------------------------------------------------------------- server

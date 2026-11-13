@@ -1,12 +1,13 @@
 # The flux2-scenery route
 
 FLUX.2 [dev] text-to-image with the Turbo LoRA, through ComfyUI, built for wide scenery
-(default 1344×768). `tools/forge job submit flux2-scenery …` loads the workflow export from
-the settings folder, edits a few nodes in memory and queues it.
+(default 1344×768). `tools/forge job submit flux2-scenery …` loads the workflow — the settings folder's
+`comfy/flux2-scenery.json` if there is one, otherwise the bundled default — edits a few nodes
+in memory and queues it.
 
 ## The workflow
 
-`workflows/flux2-scenery.api.json` is the API-format export of ComfyUI's template
+`tools/src/forgetools/workflows/flux2-scenery.json` is the API-format export of ComfyUI's template
 `image_flux2_text_to_image` (Comfy-Org/workflow_templates, MIT), unchanged (sha256
 `c720a6d7c114cc84ccd4d0b3d70a5edb2b8677fed25993b166d2a683e20bd98b`). The tool never edits the
 file; it finds nodes by class type, so a re-export from a newer template with the same node
@@ -39,7 +40,7 @@ ComfyUI folders named:
 | `models/loras/` | `Flux_2-Turbo-LoRA_comfyui.safetensors` | 2.57 GB | [ByteZSzn/Flux.2-Turbo-ComfyUI](https://huggingface.co/ByteZSzn/Flux.2-Turbo-ComfyUI/resolve/main/Flux_2-Turbo-LoRA_comfyui.safetensors) | none stated on the model page |
 | `models/vae/` | `full_encoder_small_decoder.safetensors` | 238 MB | [black-forest-labs/FLUX.2-small-decoder](https://huggingface.co/black-forest-labs/FLUX.2-small-decoder/resolve/main/full_encoder_small_decoder.safetensors) | Apache-2.0 |
 
-The file names must match the graph (or edit your copy of the export). The job record keeps
+The file names must match the graph (or put your own export in the settings folder). The job record keeps
 the model and LoRA file names, not their hashes.
 
 ## Timing (one server, see Evidence)
